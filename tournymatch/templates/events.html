@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block content %}
+	
+	<article >
+		<h2>{{ event.name }}</h2>
+		<p>Date: {{ event.date_scheduled}} </p>
+		{% if not current_user.is_anonymous %}
+    		{% if current_user.get_id() %}
+    			<a href="#">Join Event</a>
+    		{% endif %}
+
+		{% endif %}
+		
+	</article>
+
+{% endblock content %}

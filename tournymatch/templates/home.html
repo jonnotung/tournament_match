@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block content %}
+	{% for tourny in tournys %}
+		<article class="media content-section">
+		  <div class="media-body">
+		    <div class="article-metadata">
+		      <a class="mr-2" href="{{ url_for('event', id=tourny.id) }}">{{ tourny.name }}</a>
+		      <small class="text-muted">{{ tourny.date_scheduled }}</small>
+		    </div>
+		  </div>
+		</article>
+	{% endfor %}
+{% endblock content %}

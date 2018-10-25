@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% block content %}
+	{% for user in users %}
+		<article >
+		    <p>
+		    	{{ user.username }}
+		    </p>
+		</article>
+	{% endfor %}
+{% endblock content %}
