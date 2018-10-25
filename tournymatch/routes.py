@@ -9,13 +9,13 @@ from werkzeug.urls import url_parse
 @app.route("/")
 @app.route("/home")
 def index():
-	events = Tournament.query.all()
+	events = Tournament.query.order_by(Tournament.date_scheduled)
 	return render_template('home.html', tournys=events)
 
 @app.route("/event/<id>")
 def event(id):
 	event = Tournament.query.filter_by(id=id).first_or_404()
-	users_joined = event.users
+	users_joined = event.joined_users()
 	
 	return render_template('events.html', event=event, users_joined = users_joined, id=id)
 
@@ -24,11 +24,13 @@ def join_event(id):
 	event = Tournament.query.filter_by(id=id).first_or_404()
 	
 	curr_user = User.query.filter_by(id=current_user.get_id()).first_or_404()
-	users_joined = event.users
+	
 	if current_user.is_authenticated:
-		event.users.append(curr_user)
-		
-	return render_template('events.html', event=event, users_joined = users_joined, id=id)
+		event.user_joins(curr_user)
+		db.session.commit()
+
+	users_joined = event.joined_users()
+	return redirect(url_for('event', id=id))
 
 @app.route('/create_event', methods = ['GET', 'POST'])
 @login_required

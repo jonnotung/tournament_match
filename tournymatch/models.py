@@ -34,9 +34,18 @@ class Tournament(db.Model):
 	description = db.Column(db.Text, nullable=True)
 	users = db.relationship('User', secondary=user_tournament_assoc, primaryjoin=(user_tournament_assoc.c.tournament_id == id), back_populates='tournaments')
 
-
 	def __repr__(self):
 		return 'tournament:{} date:'.format(self.name, self.date_scheduled)
+
+	def is_already_joined(self, user):
+		return self.users.filter(user_tournament_assoc.c.user_id == user.id).count() > 0
+
+	def user_joins(self, user):
+		if not self.is_already_joined(user):
+			self.users.append(user)
+
+	def joined_users(self):
+		return User.query.join(user_tournament_assoc, (user_tournament_assoc.c.tournament_id == self.id))
 
 
 @login.user_loader
