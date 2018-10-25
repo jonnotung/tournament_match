@@ -5,8 +5,11 @@
 		<h2>{{ event.name }}</h2>
 		<p>Date: {{ event.date_scheduled}} </p>
 		{% if not current_user.is_anonymous %}
-    		{% if current_user.get_id() %}
+    		{% if not currently_joined %}
     			<a href="{{ url_for('join_event', id=id) }}">Join Event</a>
+    			
+    		{% else %}
+    			<p>Your are signed up for this event.</p>
     		{% endif %}
 		{% endif %}
 		<div class="media-body">

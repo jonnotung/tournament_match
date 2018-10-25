@@ -15,7 +15,7 @@ class User(UserMixin, db.Model):
 	username = db.Column(db.String(30), unique=True, nullable=False)
 	email = db.Column(db.String(120), unique=True, nullable=False)
 	password_hash = db.Column(db.String(60), nullable=False)
-	tournaments = db.relationship('Tournament', secondary=user_tournament_assoc, primaryjoin=(user_tournament_assoc.c.user_id == id), back_populates='users')
+	tournaments = db.relationship('Tournament', secondary=user_tournament_assoc, primaryjoin=(user_tournament_assoc.c.user_id == id), back_populates='users', lazy='dynamic')
 	
 	def set_password(self, password):
 		self.password_hash = generate_password_hash(password)
@@ -26,13 +26,13 @@ class User(UserMixin, db.Model):
 	def __repr__(self):
 		return 'User:{} email:{}'.format(self.username, self.email)
 
-class Tournament(db.Model):
+class Tournament(UserMixin, db.Model):
 	_tablename_ = 'tournament'
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(30), unique = True, nullable = False)
 	date_scheduled = db.Column(db.Date, nullable = False, default=datetime.today)
 	description = db.Column(db.Text, nullable=True)
-	users = db.relationship('User', secondary=user_tournament_assoc, primaryjoin=(user_tournament_assoc.c.tournament_id == id), back_populates='tournaments')
+	users = db.relationship('User', secondary=user_tournament_assoc, primaryjoin=(user_tournament_assoc.c.tournament_id == id), back_populates='tournaments', lazy='dynamic')
 
 	def __repr__(self):
 		return 'tournament:{} date:'.format(self.name, self.date_scheduled)
@@ -45,8 +45,7 @@ class Tournament(db.Model):
 			self.users.append(user)
 
 	def joined_users(self):
-		return User.query.join(user_tournament_assoc, (user_tournament_assoc.c.tournament_id == self.id))
-
+		return self.users
 
 @login.user_loader
 def load_user(id):

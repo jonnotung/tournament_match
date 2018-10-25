@@ -16,8 +16,13 @@ def index():
 def event(id):
 	event = Tournament.query.filter_by(id=id).first_or_404()
 	users_joined = event.joined_users()
-	
-	return render_template('events.html', event=event, users_joined = users_joined, id=id)
+	currently_joined = False
+	for user in users_joined:
+		curr_id = int(current_user.get_id())
+		if user.id == curr_id:
+			currently_joined = True
+
+	return render_template('events.html', event=event, users_joined = users_joined, id=id, currently_joined = currently_joined)
 
 @app.route("/event/<id>/join")
 def join_event(id):
