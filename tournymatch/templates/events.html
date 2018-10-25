@@ -1,16 +1,26 @@
 {% extends "layout.html" %}
 {% block content %}
 	
-	<article >
+	<article>
 		<h2>{{ event.name }}</h2>
 		<p>Date: {{ event.date_scheduled}} </p>
 		{% if not current_user.is_anonymous %}
     		{% if current_user.get_id() %}
-    			<a href="#">Join Event</a>
+    			<a href="{{ url_for('join_event', id=id) }}">Join Event</a>
     		{% endif %}
-
 		{% endif %}
-		
+		<div class="media-body">
+      		<div class="article-metadata">
+				<h5>Users Signed Up</h5>
+			</div>
+		</div>
+		{% for user in users_joined %}
+    		<div class="media-body">
+      			<div class="article-metadata">
+					<p  class="mr-2">{{ user.username }}</p>	
+      			</div>
+      		</div>
+		{% endfor %}			
 	</article>
 
 {% endblock content %}

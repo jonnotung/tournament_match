@@ -14,13 +14,21 @@ def index():
 
 @app.route("/event/<id>")
 def event(id):
-	event = Tournament.query.filter_by(id=id).first()
-	return render_template('events.html', event=event)
+	event = Tournament.query.filter_by(id=id).first_or_404()
+	users_joined = event.users
+	
+	return render_template('events.html', event=event, users_joined = users_joined, id=id)
 
-@app.route("/even/<id>/join")
+@app.route("/event/<id>/join")
 def join_event(id):
-	event = Tournament.query.filter_by(id=id).first()
-	return render_template('events.html', event=event)
+	event = Tournament.query.filter_by(id=id).first_or_404()
+	
+	curr_user = User.query.filter_by(id=current_user.get_id()).first_or_404()
+	users_joined = event.users
+	if current_user.is_authenticated:
+		event.users.append(curr_user)
+		
+	return render_template('events.html', event=event, users_joined = users_joined, id=id)
 
 @app.route('/create_event', methods = ['GET', 'POST'])
 @login_required
@@ -67,8 +75,7 @@ def login():
 		flash(f'Login successful.', 'success')
 		if not next_page or url_parse(next_page).netloc != '':
 			next_page = url_for('index')
-		
-		return redirect(url_for('create_event'))
+		return redirect(next_page)
 
 	return render_template('login.html', title='Sign In', form=form)
 

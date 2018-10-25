@@ -1,8 +1,8 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt 
-from flask_migrate import Migrate
 from flask_login import LoginManager
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '132f93f574e7b1fcd5cd2c70555f0683'
