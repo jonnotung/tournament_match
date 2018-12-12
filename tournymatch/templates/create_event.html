@@ -2,9 +2,11 @@
 {% block content %}
 	<h1>Create Event</h1>
 	<form action = "" method = "post" novalidate>
+		
 		{{ form.hidden_tag() }}
-		<p>
+		<div class="form-group">
 			{{ form.name.label }}<br>
+			
 			{{ form.name(size=32) }}
 			
             {% for error in form.name.errors %}
@@ -14,9 +16,10 @@
             		</li>
             	</ul>
             {% endfor %}
-		</p>
+        
+		</div>
 
-		<p>
+		<div class="form-group">
 			{{ form.date_scheduled.label }}<br>
 			{{ form.date_scheduled(size=32, formatString='%Y-%m-%d/') }}
 			
@@ -27,7 +30,23 @@
             		</li>
             	</ul>
             {% endfor %}
-		</p>
+		</div>
+
+		<div class="form-group">
+			{{ form.description.label }}<br>
+			
+			{{ form.description }}
+			
+            {% for error in form.description.errors %}
+            	<ul>
+            		<li>
+            			<span style='color: red;'>{{ error }}</span>
+            		</li>
+            	</ul>
+            {% endfor %}
+		
+		</div>
 		<p>{{ form.submit() }}</p>
+	
 	</form>
 {% endblock content %}

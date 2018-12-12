@@ -1,15 +1,15 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextField, TextAreaField
 from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from tournymatch.models import User, Tournament
 from datetime import datetime
 
 class RegistrationForm(FlaskForm):
-	username = StringField('Name', validators=[DataRequired(), Length(min = 2, max = 20)])
-	email = StringField('Email', validators = [DataRequired(), Email()])
-	password = PasswordField('Password', validators = [DataRequired()])
-	confirm_password = PasswordField('Confirm Password', validators = [DataRequired(), EqualTo('password')])
+	username = StringField('Name', validators=[DataRequired(), Length(min = 2, max = 20)], render_kw = {"class": "form-control form-control-sm", })
+	email = StringField('Email', validators = [DataRequired(), Email()], render_kw = {"class": "form-control form-control-sm"})
+	password = PasswordField('Password', validators = [DataRequired()], render_kw = {"class": "form-control form-control-sm"})
+	confirm_password = PasswordField('Confirm Password', validators = [DataRequired(), EqualTo('password')], render_kw = {"class": "form-control form-control-sm"})
 	submit = SubmitField('Sign Up')
 
 	def validate_username(self, username):
@@ -32,8 +32,9 @@ class LoginForm(FlaskForm):
 	submit = SubmitField('Login')
 
 class CreateTournamentForm(FlaskForm):
-	name = StringField('Name', validators = [DataRequired()])
-	date_scheduled = DateField('Date', format='%Y-%m-%d')
+	name = StringField('Name', validators = [DataRequired()], render_kw = {"class": "form-control form-control-sm"})
+	description = TextAreaField('Description', render_kw = {"class": "form-control form-control-sm", "rows": 6, "cols": 90})
+	date_scheduled = DateField('Date', format='%Y-%m-%d', render_kw = {"class": "form-control form-control-sm"})
 	submit = SubmitField('Create Event')
 
 	def validate_name(self, name):

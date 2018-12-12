@@ -3,6 +3,7 @@ from tournymatch import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from tournymatch import login
+from hashlib import md5
 
 user_tournament_assoc = db.Table('user_tournament_assoc', db.metadata,	
 	db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
@@ -15,6 +16,7 @@ class User(UserMixin, db.Model):
 	username = db.Column(db.String(30), unique=True, nullable=False)
 	email = db.Column(db.String(120), unique=True, nullable=False)
 	password_hash = db.Column(db.String(60), nullable=False)
+	created_events = db.relationship('Tournament', backref='creator', lazy='dynamic')
 	tournaments = db.relationship('Tournament', secondary=user_tournament_assoc, primaryjoin=(user_tournament_assoc.c.user_id == id), back_populates='users', lazy='dynamic')
 	
 	def set_password(self, password):
@@ -22,6 +24,10 @@ class User(UserMixin, db.Model):
 
 	def check_password(self, password):
 		return check_password_hash(self.password_hash, password)
+
+	def avatar(self, size):
+		hash_digest = md5(self.email.lower().encode('utf-8')).hexdigest()
+		return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(hash_digest, size)
 
 	def __repr__(self):
 		return 'User:{} email:{}'.format(self.username, self.email)
@@ -32,6 +38,7 @@ class Tournament(UserMixin, db.Model):
 	name = db.Column(db.String(30), unique = True, nullable = False)
 	date_scheduled = db.Column(db.Date, nullable = False, default=datetime.today)
 	description = db.Column(db.Text, nullable=True)
+	creator_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 	users = db.relationship('User', secondary=user_tournament_assoc, primaryjoin=(user_tournament_assoc.c.tournament_id == id), back_populates='tournaments', lazy='dynamic')
 
 	def __repr__(self):

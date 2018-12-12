@@ -12,9 +12,17 @@
     			<p>Your are signed up for this event.</p>
     		{% endif %}
 		{% endif %}
+
+		<div class="media-body">
+      		<div class="article-metadata">
+				<h4>Event Description</h4>
+			</div>
+		</div>
+
 		<div class="media-body">
       		<div class="article-metadata">
 				<h5>Users Signed Up</h5>
+				<p class="article-content">{{ event.description }}</p>
 			</div>
 		</div>
 		{% for user in users_joined %}

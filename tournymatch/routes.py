@@ -42,7 +42,7 @@ def join_event(id):
 def create_event():
 	form = CreateTournamentForm()
 	if form.validate_on_submit():
-		event = Tournament(name = form.name.data, date_scheduled = form.date_scheduled.data)
+		event = Tournament(name = form.name.data, date_scheduled = form.date_scheduled.data, description = form.description.data)
 		db.session.add(event)
 		db.session.commit()
 		flash('Event created!', 'success')
@@ -90,6 +90,13 @@ def login():
 def user_list():
 	users = User.query.all()
 	return render_template('user_list.html', users=users)
+
+@app.route('/users/<username>')
+@login_required
+def user(username):
+	user = User.query.filter_by(username-username).first_or_404()
+	events = user.created_events
+	return render_template('user_list.html', users=user)
 
 @app.route('/logout')
 def logout():
